@@ -12,28 +12,26 @@ namespace Calculator.ViewModels
         public int FirstOperand
         {
             get => _firstOperand;
-            set {
-                if (SetProperty(ref _firstOperand, value))
-                    OnPropertyChanged(nameof(Result));
-            }
+            set => SetProperty(ref _firstOperand, value);
         }
 
         public int SecondOperand
         {
             get => _secondOperand;
-            set {
-                if (SetProperty(ref _secondOperand, value))
-                    OnPropertyChanged(nameof(Result));
+            set => SetProperty(ref _secondOperand, value);
+        }
+
+        public IReadOnlyList<Operation> Operations
+        {
+            get {
+                return new List<Operation> { Operation.Add, Operation.Subtract, Operation.Multiply, Operation.Divide };
             }
         }
 
         public Operation Operation
         {
             get => _operation;
-            set {
-                if (SetProperty(ref _operation, value))
-                    OnPropertyChanged(nameof(Result));
-            }
+            set => SetProperty(ref _operation, value);
         }
 
         public int Result => _operation switch {
@@ -43,5 +41,10 @@ namespace Calculator.ViewModels
             Operation.Divide => _secondOperand != 0 ? _firstOperand / _secondOperand : 0,
             _ => throw new NotSupportedException("Invalid operation"),
         };
+
+        public void Calculate()
+        {
+            OnPropertyChanged(nameof(Result));
+        }
     }
 }

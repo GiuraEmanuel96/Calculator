@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation and Contributors.
 // Licensed under the MIT License.
 
+using Calculator.ViewModels;
 using Microsoft.UI.Xaml.Controls;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -15,7 +16,10 @@ namespace Calculator.Pages
     {
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            ViewModel = new MainViewModel();
         }
+
+        public MainViewModel ViewModel { get; set; }
     }
 }
