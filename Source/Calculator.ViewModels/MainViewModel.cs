@@ -5,20 +5,30 @@ namespace Calculator.ViewModels
 {
     public class MainViewModel : ObservableObject
     {
-        private int _firstOperand;
-        private int _secondOperand;
+        private string _firstOperand = "0";
+        private string _secondOperand = "0";
         private Operation _operation;
 
-        public int FirstOperand
+        public string FirstOperand
         {
             get => _firstOperand;
-            set => SetProperty(ref _firstOperand, value);
+            set {
+                if (int.TryParse(value, out int number))
+                {
+                    SetProperty(ref _firstOperand, value);
+                }
+            }
         }
 
-        public int SecondOperand
+        public string SecondOperand
         {
             get => _secondOperand;
-            set => SetProperty(ref _secondOperand, value);
+            set {
+                if (int.TryParse(value, out int number))
+                {
+                    SetProperty(ref _secondOperand, value);
+                }
+            }
         }
 
         public IReadOnlyList<Operation> Operations
@@ -35,10 +45,10 @@ namespace Calculator.ViewModels
         }
 
         public int Result => _operation switch {
-            Operation.Add => _firstOperand + _secondOperand,
-            Operation.Subtract => _firstOperand - _secondOperand,
-            Operation.Multiply => _firstOperand * _secondOperand,
-            Operation.Divide => _secondOperand != 0 ? _firstOperand / _secondOperand : 0,
+            Operation.Add => int.Parse(_firstOperand) + int.Parse(_secondOperand),
+            Operation.Subtract => int.Parse(_firstOperand) - int.Parse(_secondOperand),
+            Operation.Multiply => int.Parse(_firstOperand) * int.Parse(_secondOperand),
+            Operation.Divide => int.Parse(_secondOperand) != 0 ? int.Parse(_firstOperand) / int.Parse(_secondOperand) : 0,
             _ => throw new NotSupportedException("Invalid operation"),
         };
 
