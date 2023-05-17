@@ -5,29 +5,24 @@ namespace Calculator.ViewModels
 {
     public class MainViewModel : ObservableObject
     {
-        private string _firstOperand = "0";
-        private string _secondOperand = "0";
+        private int? _firstOperand = 0;
+        private int? _secondOperand = 0;
         private Operation _operation;
+        private string _errorMessage = string.Empty;
 
-        public string FirstOperand
+        public int? FirstOperand
         {
             get => _firstOperand;
             set {
-                if (int.TryParse(value, out int number))
-                {
-                    SetProperty(ref _firstOperand, value);
-                }
+                SetProperty(ref _firstOperand, value);
             }
         }
 
-        public string SecondOperand
+        public int? SecondOperand
         {
             get => _secondOperand;
             set {
-                if (int.TryParse(value, out int number))
-                {
-                    SetProperty(ref _secondOperand, value);
-                }
+                SetProperty(ref _secondOperand, value);
             }
         }
 
@@ -44,17 +39,41 @@ namespace Calculator.ViewModels
             set => SetProperty(ref _operation, value);
         }
 
-        public int Result => _operation switch {
-            Operation.Add => int.Parse(_firstOperand) + int.Parse(_secondOperand),
-            Operation.Subtract => int.Parse(_firstOperand) - int.Parse(_secondOperand),
-            Operation.Multiply => int.Parse(_firstOperand) * int.Parse(_secondOperand),
-            Operation.Divide => int.Parse(_secondOperand) != 0 ? int.Parse(_firstOperand) / int.Parse(_secondOperand) : 0,
-            _ => throw new NotSupportedException("Invalid operation"),
-        };
+        public int? Result
+        {
+            get {
+                if (_firstOperand.HasValue && _secondOperand.HasValue)
+                {
+                    return _operation switch {
+                        Operation.Add => _firstOperand.Value + _secondOperand.Value,
+                        Operation.Subtract => _firstOperand.Value - _secondOperand.Value,
+                        Operation.Multiply => _firstOperand.Value * _secondOperand.Value,
+                        Operation.Divide => _secondOperand.Value != 0 ? _firstOperand.Value / _secondOperand.Value : (int?)null,
+                        _ => throw new NotSupportedException("Invalid operation"),
+                    };
+                }
+
+                return null;
+            }
+        }
+
+        public string? ErrorMessage
+        {
+            get
+            {
+                if (_firstOperand == null || _secondOperand == null)
+                {
+                    return "Neither operand can be empty.";
+                }
+
+                return null;
+            }
+        }
 
         public void Calculate()
         {
             OnPropertyChanged(nameof(Result));
+            OnPropertyChanged(nameof(ErrorMessage));
         }
     }
 }

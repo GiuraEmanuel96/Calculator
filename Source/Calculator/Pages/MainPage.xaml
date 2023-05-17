@@ -6,6 +6,7 @@
     xmlns:vm="using:Calculator.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:c="using:Calculator.Converters"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -15,15 +16,17 @@
 
     <Grid>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBox Width="200" Margin="5" Header="First Operand" Text="{x:Bind ViewModel.FirstOperand, Mode=TwoWay}"
-                     BeforeTextChanging="TextBox_BeforeTextChanging" />
+            <TextBox Width="200" Margin="5" Header="First Operand" Text="{x:Bind ViewModel.FirstOperand, Mode=TwoWay, Converter={StaticResource
+                     NullableIntConverter}}" BeforeTextChanging="TextBox_BeforeTextChanging" />
             <ComboBox Width="200" Margin="5" Header="Operation" ItemsSource="{x:Bind ViewModel.Operations}" SelectedItem="{x:Bind ViewModel.Operation,
                       Mode=TwoWay}" />
-            <TextBox Width="200" Margin="5" Header="Second Operand" Text="{x:Bind ViewModel.SecondOperand, Mode=TwoWay}"
-                     BeforeTextChanging="TextBox_BeforeTextChanging" />
+            <TextBox Width="200" Margin="5" Header="Second Operand" Text="{x:Bind ViewModel.SecondOperand, Mode=TwoWay,  Converter={StaticResource
+                     NullableIntConverter}}" BeforeTextChanging="TextBox_BeforeTextChanging" />
             <Button Width="200" Margin="5" Content="Calculate" Click="{x:Bind ViewModel.Calculate}" />
             <TextBlock Width="200" Margin="5" Text="Result:" />
             <TextBlock Width="200" Margin="5" Text="{x:Bind ViewModel.Result, Mode=OneWay}" />
+            <TextBlock Width="200" Margin="5" Text="Error message:" Visibility="{x:Bind c:Convert.NullToCollapsed(ViewModel.ErrorMessage)}" />
+            <TextBlock Width="200" Margin="5" Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}" />
         </StackPanel>
     </Grid>
 </Page>
