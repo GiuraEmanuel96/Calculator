@@ -13,5 +13,15 @@ namespace Calculator.Converters
 
             return Visibility.Visible;
         }
+
+        public static Visibility FalseToVisible(bool value)
+        {
+            if (!value)
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
     }
 }

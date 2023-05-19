@@ -5,8 +5,14 @@ using Singulink.IO;
 
 namespace Calculator.Services
 {
-    public class FileDataManager : IDataManager
+    public sealed class FileDataManager : IDataManager
     {
+        public static FileDataManager Instance { get; } = new();
+
+        private FileDataManager()
+        {
+        }
+
         public IAbsoluteFilePath FilePath
         {
             get {
@@ -19,6 +25,7 @@ namespace Calculator.Services
 
         public async Task<Calculation?> Load()
         {
+            await Task.Delay(5000);
             var filePath = FilePath;
 
             if (!filePath.Exists)

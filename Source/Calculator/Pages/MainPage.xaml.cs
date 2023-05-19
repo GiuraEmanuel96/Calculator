@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation and Contributors.
 // Licensed under the MIT License.
 
+using Calculator.Services;
 using Calculator.ViewModels;
 using Microsoft.UI.Xaml.Controls;
 
@@ -17,7 +18,7 @@ namespace Calculator.Pages
         public MainPage()
         {
             InitializeComponent();
-            ViewModel = new MainViewModel();
+            ViewModel = new MainViewModel(FileDataManager.Instance);
         }
 
         public MainViewModel ViewModel { get; set; }
