@@ -2,8 +2,6 @@
       x:Class="Calculator.Pages.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:Calculator.Pages"
-      xmlns:vm="using:Calculator.ViewModels"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:c="using:Calculator.Converters"
@@ -20,13 +18,17 @@
             <TextBox Width="200" Margin="5" Header="Second Operand" Text="{x:Bind ViewModel.SecondOperand, Mode=TwoWay,  Converter={StaticResource
                      NullableIntConverter}}" BeforeTextChanging="TextBox_BeforeTextChanging" />
             <Button Width="200" Margin="5" Content="Calculate" Click="{x:Bind ViewModel.Calculate}" />
-            <TextBlock Width="200" Margin="5" Text="Result:" />
-            <TextBlock Width="200" Margin="5" Text="{x:Bind ViewModel.Result, Mode=OneWay}" />
-            <TextBlock Foreground="Red" Width="200" Margin="5" Text="Error message:" Visibility="{x:Bind c:Convert.NullToCollapsed(ViewModel.ErrorMessage), Mode=OneWay}" />
-            <TextBlock Foreground="Red" Width="200" Margin="5" Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}" />
+            <TextBlock Width="200" Margin="5">
+                <Run Text="Result: " />
+                <Run Text="{x:Bind ViewModel.Result, Mode=OneWay}" />
+            </TextBlock>
+            <TextBlock Foreground="Red" Width="200" Margin="5" Visibility="{x:Bind ViewModel.HasErrorMessage, Mode=OneWay}" TextWrapping="Wrap">
+                <Run Text="Error message: " />
+                <Run Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}" />
+            </TextBlock>
         </StackPanel>
-
-        <StackPanel Visibility="{x:Bind c:Convert.FalseToVisible(ViewModel.IsLoaded) , Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="100" CornerRadius="10" Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
+        <StackPanel Visibility="{x:Bind c:Convert.FalseToVisible(ViewModel.IsLoaded) , Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Padding="100" CornerRadius="10" Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
             <muxc:ProgressRing />
             <TextBlock Text="Loading..." Margin="0,20,0,0" />
         </StackPanel>

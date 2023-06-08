@@ -13,19 +13,14 @@ namespace Calculator.Services
         {
         }
 
-        public IAbsoluteFilePath FilePath
-        {
-            get {
-                return DirectoryPath
+        public static IAbsoluteFilePath FilePath => DirectoryPath
                 .GetSpecialFolder(Environment.SpecialFolder.LocalApplicationData)
                 .CombineDirectory("WinUICalculator")
                 .CombineFile("data.json");
-            }
-        }
 
         public async Task<Calculation?> Load()
         {
-            await Task.Delay(5000);
+            await Task.Delay(3000);
             var filePath = FilePath;
 
             if (!filePath.Exists)
@@ -34,15 +29,37 @@ namespace Calculator.Services
             }
 
             await using var fileStream = await filePath.OpenStreamAsync(FileMode.Open, FileAccess.Read);
-            var calculation = await JsonSerializer.DeserializeAsync<Calculation>(fileStream);
 
-            return calculation;
+            try
+            {
+                return await JsonSerializer.DeserializeAsync<Calculation>(fileStream);
+            }
+            catch (JsonException ex)
+            {
+                throw new InvalidDataException("Invalid or corrupt data file contents.", ex);
+            }
         }
 
         public async Task Save(Calculation calculation)
         {
-            await using var fileStream = await FilePath.OpenStreamAsync(FileMode.Create, FileAccess.Write);
+            // TODO: Save to temp file first, i.e. "data.json.tmp", then "move" temp file to "data.json"
+            // var tempFilePath = DirectoryPath
+            //             .GetSpecialFolder(Environment.SpecialFolder.LocalApplicationData)
+            //             .CombineDirectory("WinUICalculator")
+            //             .CombineFile("data.json.tmp");
+
+            var tempFilePath = FilePath.ParentDirectory.CombineFile(FilePath.Name + ".tmp");
+
+            tempFilePath.ParentDirectory.Create();
+            await using var fileStream = await tempFilePath.OpenStreamAsync(FileMode.Create, FileAccess.Write);
             await JsonSerializer.SerializeAsync(fileStream, calculation);
+
+            await Task.Run(() => tempFilePath.MoveTo(FilePath, true));
+        }
+
+        public async Task DeleteAsync()
+        {
+            await Task.Run(FilePath.Delete);
         }
     }
 }

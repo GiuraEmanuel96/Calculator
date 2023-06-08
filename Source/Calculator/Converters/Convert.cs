@@ -4,16 +4,6 @@ namespace Calculator.Converters
 {
     public static class Convert
     {
-        public static Visibility NullToCollapsed(object? value)
-        {
-            if (value == null)
-            {
-                return Visibility.Collapsed;
-            }
-
-            return Visibility.Visible;
-        }
-
         public static Visibility FalseToVisible(bool value)
         {
             if (!value)
@@ -22,6 +12,16 @@ namespace Calculator.Converters
             }
 
             return Visibility.Collapsed;
+        }
+
+        public static Visibility NullToCollapsed(object? value)
+        {
+            if (value == null)
+            {
+                return Visibility.Collapsed;
+            }
+
+            return Visibility.Visible;
         }
     }
 }

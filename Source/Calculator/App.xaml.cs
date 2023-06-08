@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Calculator.Pages;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -27,25 +28,49 @@ public partial class App : Application
     /// <summary>
     /// Invoked when the application is launched.
     /// </summary>
-    /// <param name="args">Details about the launch request and process.</param>
+    ///
+    private Frame _rootFrame;
+
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
         window = new Window();
         window.Activate();
 
-        var rootFrame = window.Content as Frame;
+        var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
+        var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
+        var appWindow = AppWindow.GetFromWindowId(windowId);
 
-        if (rootFrame == null)
+        appWindow.Closing += OnAppClosing;
+
+        if (window.Content is Frame frame)
+        {
+            _rootFrame = frame;
+        }
+        else
+        {
+            // Handle the case where window.Content is not a Frame.
+        }
+
+        if (_rootFrame == null)
         {
             // Create a Frame to act as the navigation context and navigate to the first page
-            rootFrame = new Frame();
-            window.Content = rootFrame;
+            _rootFrame = new Frame();
+            window.Content = _rootFrame;
         }
 
-        if (rootFrame.Content == null)
-        {
-            rootFrame.Navigate(typeof(MainPage), args.Arguments);
-        }
+        if (_rootFrame.Content == null)
+            _rootFrame.Navigate(typeof(MainPage), args.Arguments);
+    }
+
+    private async void OnAppClosing(AppWindow sender, AppWindowClosingEventArgs args)
+    {
+        args.Cancel = true;
+
+        // do your async save work here
+        if (_rootFrame.Content is ISaveStatePage saveStatePage)
+            await saveStatePage.ViewModel.SaveAsync();
+
+        window.Close();
     }
 
     private Window window;

@@ -13,15 +13,17 @@ namespace Calculator.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : Page, ISaveStatePage
     {
+        public MainViewModel ViewModel { get; }
+
+        ISaveStateViewModel ISaveStatePage.ViewModel => ViewModel;
+
         public MainPage()
         {
             InitializeComponent();
-            ViewModel = new MainViewModel(FileDataManager.Instance);
+            ViewModel = new MainViewModel(FileDataManager.Instance, DialogService.Instance);
         }
-
-        public MainViewModel ViewModel { get; set; }
 
         private void TextBox_BeforeTextChanging(TextBox sender, TextBoxBeforeTextChangingEventArgs args)
         {
